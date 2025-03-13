@@ -254,7 +254,7 @@ The basic garbage collector algorithm is called **mark-and-sweep**
 - Mark all references from step 2 (and so on until every reachable (from the roots) references are visited)
 - Remove all values that wasn't marked (they are not reachable)
 
-[put the picture]
+![image](https://github.com/user-attachments/assets/ebe164a9-eead-4f54-9333-3556de64d761)
 
 Some of the optimizations:
 
