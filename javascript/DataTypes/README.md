@@ -215,3 +215,51 @@ In case of using `===` none of types coerce
 true === 0 // false
 ```
 
+
+## Iterables
+When we use loops like `for..of` JavaScript checks if an object (or a primetime conversed to wrapper object) has the `Symbol.iterator`. So we can change the loop or add this `Symbol.iterator` to objects
+
+```
+const obj = {
+  name: 'Alex',
+  age: 34,
+
+  [Symbol.iterator]: function() {
+    const self = this
+    const keys = Object.keys(this)
+
+    let index = 0
+    return {
+      next() {
+        if (index < keys.length) {
+          const value = self[keys[index]]
+          index++
+          return { done: false, value }
+        } else {
+          return { done: true }
+        }
+      }
+    }
+  }
+}
+
+for (const item of obj) {
+  console.log('item:', item)
+}
+// item: Alex
+// item: 34
+```
+
+> **Iterables and array-likes**
+> 
+> Two official terms look similar, but are very different. Please make sure you understand them well to avoid the confusion.
+> 
+> Iterables are objects that implement the Symbol.iterator method, as described above.
+Array-likes are objects that have indexes and length, so they look like arrays.
+
+
+## Map / Set
+TODO
+
+## WeekMap / WeekSet
+TODO
