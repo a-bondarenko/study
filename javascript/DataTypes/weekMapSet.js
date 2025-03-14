@@ -4,7 +4,6 @@ const map = new Map().set(obj, 'some value')
 
 obj = undefined
 
-console.log(obj) // undefined
 console.log(map.keys()) // { { name: 'Alex' } }
 
 let obj2 = {name: 'Alex'}
