@@ -255,11 +255,114 @@ for (const item of obj) {
 > Two official terms look similar, but are very different. Please make sure you understand them well to avoid the confusion.
 > 
 > Iterables are objects that implement the Symbol.iterator method, as described above.
-Array-likes are objects that have indexes and length, so they look like arrays.
+> Array-likes are objects that have indexes and length, so they look like arrays.
 
 
-## Map / Set
-TODO
+## Map
+Map is similar to an object, but it allows keys of any type.
 
-## WeekMap / WeekSet
-TODO
+- `new Map()` – creates the map.
+- `map.set(key, value)` – stores the value by the key.
+- `map.get(key)` – returns the value by the key, undefined if key doesn’t exist in map.
+- `map.has(key)` – returns true if the key exists, false otherwise.
+- `map.delete(key)` – removes the element (the key/value pair) by the key.
+- `map.clear()` – removes everything from the map.
+- `map.size` – returns the current element count.
+- `map.keys()` – returns an iterable for keys,
+- `map.values()` – returns an iterable for values,
+- `map.entries()` – returns an iterable for entries [key, value], it’s used by default in for..of.
+- `map.forEach( (value, key, map) => {})`
+
+```
+let map = new Map();
+
+map.set('1', 'str1');   // a string key
+map.set(1, 'num1');     // a numeric key
+map.set(true, 'bool1'); // a boolean key
+
+// Also we can use an object as a key
+let john = { name: "John" };
+let visitsCountMap = new Map();
+
+// john is the key for the map
+visitsCountMap.set(john, 123);
+```
+
+> **How does it compare keys?**  
+> To test keys for equivalence, Map uses the algorithm SameValueZero. It is roughly the same as strict equality ===, but the difference is that NaN is considered equal to NaN. So NaN can be used as the key as well.
+This algorithm can’t be changed or customized.
+
+### Benefits of using Map instead of Object
+1. **Any types of keys** - we can use any type as a key
+2. **Preserving Key Order** - the order of entries remains the same as the order of insertion
+3. **Better Performance for Frequent Additions/Deletions** - Map is optimized for fast key insertions, deletions, and lookups compared to objects
+4. **Size Property** - Map has a built-in .size property, while for objects, you need Object.keys(obj).length to get the count.
+5. **Direct Iteration Support** - Map provides built-in iteration methods like .forEach(), .keys(), .values(), and .entries()
+6. **No Prototype Inheritance Issues** - Objects inherit from Object.prototype, meaning they might accidentally collide with built-in methods, whereas Map has no such issues.
+
+#### When to Use Objects Instead?
+- If you need a simple key-value store with string keys and don't require Map-specific benefits.
+- When using JSON serialization (JSON.stringify does not support Map).
+- When defining structured, fixed data models instead of dynamic key-value collections.
+
+
+## Set
+A Set is a special type collection – “set of values” (without keys), where each value may occur only once. The main feature is that repeated calls of set.add(value) with the same value don’t do anything. That’s the reason why each value appears in a Set only once.
+
+- `new Set([iterable])` – creates the set, and if an iterable object is provided (usually an array), copies values from it into the set.
+- `set.add(value)` – adds a value, returns the set itself.
+- `set.delete(value)` – removes the value, returns true if value existed at the moment of the call, otherwise false.
+- `set.has(value)` – returns true if the value exists in the set, otherwise false.
+- `set.clear()` – removes everything from the set.
+- `set.size` – is the elements count.
+- `set.forEach((value, valueAgain, set) => {})` - note it has 3 arguments
+- `set.keys()` – returns an iterable object for values,
+- `set.values()` – same as set.keys(), for compatibility with Map,
+- `set.entries()` – returns an iterable object for entries [value, value], exists for compatibility with Map.
+
+### Benefits of using Set instead of Array
+- **Unique Values Are Required** - Set automatically ensures all elements are unique, whereas an Array requires extra checks.
+- **Fast Lookups and Deletions** - Set.has(value) is faster than Array.includes(value), especially for large datasets.
+- **Efficient Element Removal** - Set.delete(value) is faster than Array.filter() or Array.splice(), which require re-indexing.
+
+##### When to Use an Array Instead?
+- When you need indexed access (e.g., array[0]).
+- When you need to maintain the order of elements explicitly (although Set does maintain insertion order).
+- When you require methods like map, filter, reduce (though you can convert a Set to an Array first).
+- When working with JSON (since Set is not serializable directly).
+
+## WeekMap
+As we know Garbage Collector cleans up objects that are no longer reachable. But if we use an object as a key in `Map` or as an element in `Set` the object will be reachable even we delete it.
+
+```
+let obj = {name: 'Alex'}
+
+const map = new Map().set(obj, 'some value')
+
+obj = undefined
+
+console.log(obj) // undefined
+console.log(map.keys()) // { { name: 'Alex' } } - it's still here
+```
+
+But if we use `WeekMap` instead, the removed object reference also will be removed from the `WeekMap`
+
+```
+let obj2 = {name: 'Alex'}
+
+const weekMap = new WeakMap().set(obj2, 'some value')
+
+obj2 =  undefined
+
+console.log(weekMap.get(obj2)); // undefined
+```
+
+> **NOTE**
+> We can use only objects as keys in `WeekMap`. It also doesn't have such methods as `keys`, `values`, `entires` and `size` 
+
+## WeekSet
+WeakSet behaves similarly:
+
+- It is analogous to Set, but we may only add objects to WeakSet (not primitives).
+- An object exists in the set while it is reachable from somewhere else.
+- Like Set, it supports add, has and delete, but not size, keys() and no iterations.
