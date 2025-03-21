@@ -1,19 +1,31 @@
 # Objects
 Objects are associative arrays with several special features.
 
-## Operator "in"
-The operator `in` checks if a property exists in an object and its prototypes.
+## Operator "new"
+We can create an object using `new` operator
 
 ```
-const obj = {
-  a: 1
+function User(name) {
+  this.name  = name
 }
 
-obj.__proto__.b = 2
+сonst user = new User('Alex')
+```
 
-console.log(obj.hasOwnProperty('a')) // true
-console.log(obj.hasOwnProperty('b')) // false
-console.log('b' in obj); // true
+**What's happening here?**
+1. A new object is being created, that has `[[Prototype]]` will be set as `User.prototype`
+2. The method `User.prototype.constructor` is calling
+3. The constructor returns the object from point 1
+
+```
+console.log(user)
+{
+  name: "Alex"
+  [[Prototype]]: {
+    constructor: ƒ User(name)
+    [[Prototype]]: Object
+  }
+}
 ```
 
 ### Ordered properties
@@ -261,3 +273,83 @@ Some of the optimizations:
 - **Generational collection** - objects are split into two sets new ones and old ones. Garbage collector tracks the new ones at first, if they survive for long enough, become “old” and are examined less often.
 - **Incremental collection** -  engine splits the whole set of existing objects into multiple parts. And then clear these parts one after another. There are many small garbage collections instead of a total one.
 - **Idle-time collection** – the garbage collector tries to run only while the CPU is idle, to reduce the possible effect on the execution.
+
+
+## Prototypal inheritance
+All object has a hidden propery `[[Prototype]]`. It can be eaither another object or `null`. 
+
+> When we read a property from object, and it’s missing, JavaScript automatically takes it from the prototype. In programming, this is called “prototypal inheritance”. 
+
+
+We can set or access `[[Prototype]]` in different ways.
+
+1. **Using the `prototype` property of a constructor function**  
+The prototype property of a constructor function has worked since very ancient times. It’s the oldest way to create objects with a given prototype.
+
+```
+function User (name) {
+  this.name = name;
+}
+
+User.prototype.sayHello = function () {
+  console.log('Hello, I am ' + this.name);
+}
+
+const user = new User('John');
+user.sayHello(); // Hello, I am John
+```
+
+2. **Using `Object.create()`**  
+Later, in the year 2012, Object.create appeared in the standard. It gave the ability to create objects with a given prototype.
+
+```
+const byCreateMethod = Object.create({
+  sayHello: function () {
+    console.log('Hello world');
+  },
+});
+
+byCreateMethod.sayHello() // Hello world'
+```
+
+3. **Using getter/setter `__proto__`**  
+Some browsers implemented the non-standard __proto__ accessor that allowed the user to get/set a prototype at any time, to give more flexibility to developers.
+
+```
+const byProto = {};
+byProto.__proto__ = {
+  sayHello: function () {
+    console.log('Hello world');
+  },
+};
+
+byProto.sayHello(); // Hello world
+```
+
+4. **Using `Object.setPrototypeOf` and `Object.getPrototypeOf`**  
+Later, in the year 2015, Object.setPrototypeOf and Object.getPrototypeOf were added to the standard, to perform the same functionality as __proto__
+
+```
+Object.getPrototypeOf(byProto).sayHello(); // Hello world
+
+Object.setPrototypeOf(byProto, {
+  sayHello2: function () {
+    console.log('Hello world 2');
+  },
+});
+```
+
+### for…in loop
+The for..in loop iterates over inherited properties too. The operator `in` checks if a property exists in an object and its prototypes.
+
+```
+const obj = {
+  a: 1
+}
+
+obj.__proto__.b = 2
+
+console.log(obj.hasOwnProperty('a')) // true
+console.log(obj.hasOwnProperty('b')) // false
+console.log('b' in obj); // true
+```
