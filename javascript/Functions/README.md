@@ -202,6 +202,39 @@ const instance = new fn()
 console.log(instance) // fn {}
 ```
 
+### Losing this
+When we call a method separately from the object, we lose `this`
+
+```
+let user = {
+  firstName: "John",
+  sayHi() {
+    alert(`Hello, ${this.firstName}!`);
+  }
+};
+
+setTimeout(user.sayHi, 1000); // Hello, undefined!
+```
+
+To solve it we can use either a `wrapper` or method `.bind()`
+
+```
+const user = {
+  name: 'John',
+  sayHi() {
+    alert(this.name);
+  }
+};
+
+setTimeout(user.sayHi, 1000); // Error!
+// The error occurs because setTimeout requires a function and not a method.
+// So, the method loses the context this.
+// To fix it, you can use a wrapper function that calls the method with the right context:
+setTimeout(() => user.sayHi(), 1000); // John
+// Or use bind:
+setTimeout(user.sayHi.bind(user), 1000); // John
+```
+
 ## Arrow functions
 1. Don't have `this`
 2. Don't have `arguments`
