@@ -1,7 +1,8 @@
 # Event Loop
 Javascript is a single-threaded language. It can execute only one task at a time. The event loop concept of an endless loop, where the JavaScript engine waits for tasks, executes them and then sleeps, waiting for more tasks.
 
-// INSERT A PICTURE OF JS RUNTIME
+![image](https://github.com/user-attachments/assets/9fd8f10c-b89b-4822-8955-d6fc32dcee33)
+
 
 The algorithm:
 Execute synchronous code until Call Stack is empty.
@@ -39,7 +40,8 @@ console.log(2); //  Sync execution
 
 ## WebAPI
 A web API is an application programming interface for either a web server or a web browser. 
-// INSERT
+![image](https://github.com/user-attachments/assets/f898de52-3cad-4ea4-aca6-d9a4561665c2)
+
 [See full](https://developer.mozilla.org/en-US/docs/Web/API)
 
 ## Heep
