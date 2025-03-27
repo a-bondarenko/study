@@ -47,8 +47,6 @@ A web API is an application programming interface for either a web server or a w
 ## Heep
 https://youtu.be/5OJRqkYbK-4
 
-## Reflow/Repaint
-// TODO
-
-## Request Animation Frame
-// TODO
+## Sources
+[Jake Archibald on the web browser event loop, setTimeout, micro tasks, requestAnimationFrame](https://youtu.be/cCOL7MC4Pl0)  
+[JavaScript Visualized - Event Loop, Web APIs, (Micro)task Queue](https://www.youtube.com/watch?v=eiC58R16hb8)

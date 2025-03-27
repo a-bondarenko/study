@@ -1,6 +1,9 @@
 # STUDY
 
 ## JavaScript
-[Data Types](javascript/DataTypes/README.md)  
-[Objects](javascript/Objects/README.md)  
-[Functions](javascript/Functions/README.md)  
+[Data Types](Javascript/DataTypes/README.md)  
+[Objects](Javascript/Objects/README.md)  
+[Functions](Javascript/Functions/README.md)  
+[EventLoop](Javascript/EventLoop/README.md)  
+[Promises](Javascript/Promises/READM.md)  
+[Browser](Javascript/Browser/README.md)
