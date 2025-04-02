@@ -302,3 +302,137 @@ newFn() // {name: alex}
 fn.call(obj, 'arg1', 'arg2') // {name: alex}
 fn.apply(obj, ['arg1', 'arg2']) // {name: alex}
 ```
+
+## Generators
+Generators in JavaScript are special functions that allow you to pause and resume execution, making them useful for handling asynchronous operations, lazy evaluation, and iterators.
+
+```
+function* simpleGenerator() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const gen = simpleGenerator();
+console.log(gen.next()); // { value: 1, done: false }
+console.log(gen.next()); // { value: 2, done: false }
+console.log(gen.next()); // { value: 3, done: false }
+console.log(gen.next()); // { value: undefined, done: true }
+```
+
+### When to Use Generators
+1. When you need on-demand execution (lazy evaluation).
+2. When implementing custom iterators.
+3. When handling sequences of async operations.
+4. When you want pause/resume functionality in execution.
+
+### Usage of generators
+
+1. Implementing Iterators
+```
+function* countDown(start) {
+    while (start > 0) {
+        yield start--;
+    }
+}
+
+const counter = countDown(5);
+console.log([...counter]); // [5, 4, 3, 2, 1]
+```
+
+2. Lazy Evaluation
+```
+function* infiniteNumbers() {
+    let num = 1;
+    while (true) {
+        yield num++;
+    }
+}
+
+const numbers = infiniteNumbers();
+console.log(numbers.next().value); // 1
+console.log(numbers.next().value); // 2
+
+```
+
+3. Fetching stream data
+For instance, GitHub allows us to retrieve commits in the same, paginated fashion:
+
+- We should make a request to fetch in the form https://api.github.com/repos/#{repo}/commits.
+- It responds with a JSON of 30 commits, and also provides a link to the next page in the Link header.
+- Then we can use that link for the next request, to get more commits, and so on.
+
+```
+async function* fetchCommits(repo) {
+  let url = `https://api.github.com/repos/${repo}/commits`;
+
+  while (url) {
+    const response = await fetch(url, { // (1)
+      headers: {'User-Agent': 'Our script'}, // github needs any user-agent header
+    });
+
+    const body = await response.json(); // (2) response is JSON (array of commits)
+
+    // (3) the URL of the next page is in the headers, extract it
+    let nextPage = response.headers.get('Link').match(/<(.*?)>; rel="next"/);
+    nextPage = nextPage?.[1];
+
+    url = nextPage;
+
+    for(let commit of body) { // (4) yield commits one by one, until the page ends
+      yield commit;
+    }
+  }
+}
+
+for await (let commit of fetchCommits("username/repository")) {
+  // process commit
+}
+```
+
+## Currying
+Currying is a transformation of functions that translates a function from callable as f(a, b, c) into callable as f(a)(b)(c).
+
+```
+function curry(f) { // curry(f) does the currying transform
+  return function(a) {
+    return function(b) {
+      return f(a, b);
+    };
+  };
+}
+
+// usage
+function sum(a, b) {
+  return a + b;
+}
+
+let curriedSum = curry(sum);
+
+alert( curriedSum(1)(2) ); // 3
+```
+
+### Why Use Currying?
+1. Partial Application  
+You can create reusable functions with preset arguments.
+```
+const multiply = a => b => a * b;
+const double = multiply(2);
+console.log(double(5)); // Output: 10
+
+```
+
+2. Function Composition  
+Currying helps in composing multiple functions together, making the code more modular and reusable.
+3. Avoiding Repetition  
+If certain arguments remain the same across function calls, you can partially apply the function.
+```
+const greet = greeting => name => `${greeting}, ${name}!`;
+const sayHello = greet("Hello");
+console.log(sayHello("Alex")); // Output: Hello, Alex!
+
+```
+4. Improved Readability and Maintainability  
+When dealing with higher-order functions, currying makes the logic more readable and expressive.
+5. Useful in Functional Programming & Middleware  
+Currying is often used in Redux (middleware), Ramda, Lodash for functional composition.

@@ -353,3 +353,57 @@ console.log(obj.hasOwnProperty('a')) // true
 console.log(obj.hasOwnProperty('b')) // false
 console.log('b' in obj); // true
 ```
+
+
+## Proxy and Reflect
+A `Proxy` is a special wrapper for object, functions, classes that allows us to use hooks while different operations:
+
+```
+const o = {
+  a: 1
+}
+
+const p = new Proxy(o, {
+  get(target, prop) {
+    console.log(`Hello world`)
+    return target[prop]
+  }
+})
+
+p.a // Hello world
+```
+
+It works for all properties of an object.
+
+> **Note:** Proxy can be slower than direct property access due to its interception overhead.
+
+### Hooks
+![image](https://github.com/user-attachments/assets/4bb108ff-b48e-4911-8144-4afbfcece09f)
+
+
+### Reflect
+Reflect is a built-in JavaScript object that provides methods for interacting with object properties in a more consistent and functional way. It acts as a companion to Proxy, allowing you to perform operations like getting, setting, or defining properties without directly manipulating objects.
+
+```
+const person = { name: "Alice", age: 25 };
+
+const proxy = new Proxy(person, {
+  get(target, prop, receiver) {
+    console.log(`Getting property: ${prop}`);
+    return Reflect.get(target, prop, receiver); // Default behavior
+  },
+  set(target, prop, value, receiver) {
+    console.log(`Setting property: ${prop} to ${value}`);
+    return Reflect.set(target, prop, value, receiver);
+  }
+});
+
+console.log(proxy.name); // Logs: Getting property: name → "Alice"
+proxy.age = 30; // Logs: Setting property: age to 30
+```
+
+#### Why we don't use just return target[prop]?
+| Approach                        | Works with Prototype? | Works with Getters? | Safer? |
+|---------------------------------|----------------------|----------------------|--------|
+| `target[prop]`                  | ❌ No                 | ❌ No                 | 🚨 No  |
+| `Reflect.get(target, prop, receiver)` | ✅ Yes                | ✅ Yes                | ✅ Yes  |
