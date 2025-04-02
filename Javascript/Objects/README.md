@@ -407,3 +407,61 @@ proxy.age = 30; // Logs: Setting property: age to 30
 |---------------------------------|----------------------|----------------------|--------|
 | `target[prop]`                  | ❌ No                 | ❌ No                 | 🚨 No  |
 | `Reflect.get(target, prop, receiver)` | ✅ Yes                | ✅ Yes                | ✅ Yes  |
+
+
+## WeekRef
+There are two types of references `“Strong reference”`, `“Weak reference”`.
+
+**Strong reference**  
+In this case the object won't be removed by Garbage Collector because it's still reachable
+```
+//  the user variable holds a strong reference to the object
+let user = { name: "John" };
+
+// copied the strong reference to the object into the admin variable
+let admin = user;
+
+// let's overwrite the value of the user variable
+user = null;
+
+// the object is still reachable through the admin variable
+```
+
+**Week reference**  
+To create a `Week reference` we can use `new WeekRef()`. Such type of reference doesn't prevent an object from being removed by GC
+
+```
+//  the user variable holds a strong reference to the object
+let user = { name: "John" };
+
+//  the admin variable holds a weak reference to the object
+let admin = new WeakRef(user);
+
+// let's overwrite the value of the user variable
+user = null;
+
+console.log(admin.deref()) // It can still be the object, and also undefined (if GC has already removed it)
+```
+
+Use cases:
+1. [Cashing](https://javascript.info/weakref-finalizationregistry#example-1-using-weakref-for-caching)
+2. [Tracking DOM elements](https://javascript.info/weakref-finalizationregistry#example-2-using-weakref-to-track-dom-objects)
+
+## FinalizationRegistry
+A FinalizationRegistry allows you to register cleanup callbacks that are called when an object is garbage collected.
+
+```
+const registry = new FinalizationRegistry((value) => {
+  console.log(`Object with value ${value} has been garbage collected`);
+});
+
+let obj = { name: "Alex" };
+registry.register(obj, "Alex");
+
+obj = null; // Object is now unreachable
+
+// At some point, when garbage collection occurs, the callback is triggered.
+```
+
+
+[Using WeakRef and FinalizationRegistry in practice](https://javascript.info/weakref-finalizationregistry#using-weakref-and-finalizationregistry-in-practice)
