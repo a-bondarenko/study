@@ -235,6 +235,22 @@ setTimeout(() => user.sayHi(), 1000); // John
 setTimeout(user.sayHi.bind(user), 1000); // John
 ```
 
+#### Reference Type
+The things is JavaScript uses a special `Reference Type` to store methods in an object. 
+The value of Reference Type is a three-value combination (base, name, strict), where:
+
+1. base is the object.
+2. name is the property name.
+3. strict is true if use strict is in effect.
+```
+// Reference Type value
+(user, "sayHi", true)
+```
+
+When parentheses `()` are called on the `Reference Type`, they receive the full information about the object and its method, and can set the right this (user in this case). 
+But when any other operation like assignment `hi = user.sayHi` discards the reference type as a whole, takes the value of user.hi (a function) and passes it on. So any further operation “loses” this.  
+So, as the result, the value of this is only passed the right way if the function is called directly using a dot `obj.method()` or square brackets `obj['method']()` syntax (they do the same here). There are various ways to solve this problem such as `func.bind()`.
+
 ## Arrow functions
 1. Don't have `this`
 2. Don't have `arguments`
