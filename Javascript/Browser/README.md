@@ -3,7 +3,8 @@
 ## Browser environment
 A platform may be a browser, or a web-server or another host, or even a “smart” coffee machine if it can run JavaScript. Each of these provides platform-specific functionality. The JavaScript specification calls that a host environment.
 
-A host environment provides its own objects and functions in addition to the language core. Web browsers give a means to control web pages. Node.js provides server-side features, and so on.
+A host environment provides its own objects and functions in addition to the language core. Web browsers give a means to control web pages. Node.js provides server-side features, and so on. 
+
 ![image](https://github.com/user-attachments/assets/9e88e207-d3d6-4c4a-97a7-3c0d920b08ce)
 
 
